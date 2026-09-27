@@ -24,3 +24,17 @@ Everything except this file lives in `docs/`.
 - Name things with the terms in [CONTEXT.md](docs/CONTEXT.md). If a needed term is missing or ambiguous, raise it instead of inventing one.
 - Don't contradict an accepted ADR. If a change needs to, propose a new ADR that supersedes it.
 - Issue tracking is Jira. Setup is still pending.
+
+## Agent skills
+
+### Issue tracker
+
+Issues are tracked in Jira; project setup is still pending. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default triage label vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `docs/CONTEXT.md` + `docs/adr/`. See `docs/agents/domain.md`.
