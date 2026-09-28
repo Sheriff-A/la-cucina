@@ -18,7 +18,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Environment files
 
-Neon's tooling (`neon deploy`, `neon env pull`, `neon checkout`) freely rewrites `.env` with the *linked Neon branch's* variables (`DATABASE_URL`, `NEON_AUTH_*`, …) — don't hand-edit those values in `.env`, they'll be overwritten on the next `neon deploy`.
+Neon's tooling (`neon deploy`, `neon env pull`, `neon checkout`) freely rewrites `.env` with the _linked Neon branch's_ variables (`DATABASE_URL`, `NEON_AUTH_*`, …) — don't hand-edit those values in `.env`, they'll be overwritten on the next `neon deploy`.
 
 Local development instead reads the database URL from **`.env.development.local`** (gitignored, not touched by Neon tooling), which both Next.js and Prisma load explicitly — see the comment in `prisma7.config.ts`. This keeps local dev on Docker Postgres per [ADR-0000](../docs/adr/0000-initial-decisions.md), while `.env`'s Neon `DATABASE_URL` remains available for anything that intentionally wants the cloud branch (or as the value to copy into Vercel's own env config for deploys — Vercel doesn't read these files).
 

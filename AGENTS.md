@@ -24,7 +24,6 @@ Everything except this file lives in `docs/`.
 - Name things with the terms in [CONTEXT.md](docs/CONTEXT.md). If a needed term is missing or ambiguous, raise it instead of inventing one.
 - Don't contradict an accepted ADR. If a change needs to, propose a new ADR that supersedes it.
 - Issue tracking is GitHub Issues, on this repo.
-- Branch model: work happens on `develop` (feature branches + PRs into it). `main` is deploy-only — Vercel deploys production from `main` with `frontend/` as its Root Directory. Don't PR straight into `main`.
 
 ## Agent skills
 
