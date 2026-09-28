@@ -6,7 +6,7 @@ A personal meal-posting PWA. Each post is a recipe with a backstory: hero image,
 
 ## Where things are
 
-Everything except this file lives in `docs/`.
+Finalized docs live in `docs/`; in-progress design exploration lives in `notes/`.
 
 | Path | What it's for |
 |---|---|
@@ -16,6 +16,7 @@ Everything except this file lives in `docs/`.
 | [docs/adr/](docs/adr/) | Architecture decision records. [0000](docs/adr/0000-initial-decisions.md) holds the planning decisions; new ones start at 0001. |
 | [docs/design/](docs/design/) | Flows, wireframes, scope and planning notes. |
 | [docs/llms/](docs/llms/) | LLM-oriented docs (llms.txt files) for the tools we use. |
+| [notes/](notes/) | Obsidian-flavored working notes: grilling/domain-modeling sessions, raw design exploration. Tracked in git, but not authoritative — once a decision lands here, reflect the outcome in `docs/` (ADR, CONTEXT.md, or `docs/design/phase-1-overview.md`'s open questions) too. |
 
 ## Rules for agents
 
