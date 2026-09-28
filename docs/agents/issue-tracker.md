@@ -1,31 +1,28 @@
-# Issue tracker: Jira
+# Issue tracker: GitHub Issues
 
-Issues and specs for this repo live in Jira. **Project setup is still pending** — there is no confirmed project key, board, or workflow yet.
+Issues and specs for this repo live in GitHub Issues, on [Sheriff-A/la-cucina](https://github.com/Sheriff-A/la-cucina) (the same repo this code lives in). Switched from Jira on 2026-09-27 when the Jira subscription lapsed.
 
-## Until setup is complete
+## Operations
 
-- Don't invent a Jira project key or issue type. If a skill needs to create or reference an issue and no project key is known, ask the user for it rather than guessing.
-- If Jira access isn't wired up yet either, fall back to describing the work in the PR description or commit message instead of creating a ticket.
+Use the `gh` CLI (already authenticated in this environment) for all operations:
 
-## Once set up
+- **Create an issue**: `gh issue create --title "..." --body "..." --label <label>`
+- **Read an issue**: `gh issue view <number>`
+- **Search**: `gh issue list --search "<query>"` or `gh issue list --label <label> --state <state>`
+- **Comment**: `gh issue comment <number> --body "..."`
+- **Edit fields** (title, body, labels, assignees, milestone): `gh issue edit <number>`
+- **Change status**: `gh issue close <number>` / `gh issue reopen <number>`. GitHub Issues has no Jira-style intermediate workflow states — status is open/closed plus whatever the triage labels below encode.
 
-Use the Atlassian MCP tools for all operations:
-
-- **Find the site**: `getAccessibleAtlassianResources` once per session, reuse the `cloudId`.
-- **Create an issue**: `createJiraIssue`.
-- **Read an issue**: `getJiraIssue`.
-- **Search**: `searchJiraIssuesUsingJql` for listing/filtering by project, status, label, etc.
-- **Comment**: `addOrEditJiraIssueComment`.
-- **Edit fields**: `editJiraIssue`.
-- **Change status**: `transitionJiraIssue`.
-- For anything not covered above, use `discover` to find the right operation, then run it with the matching `executeRead` / `executeWrite` / `executeDestructive`.
+For anything not covered by these, use `gh api` against the GitHub REST API, or `gh issue --help` / `gh label --help` for the full command surface.
 
 ## When a skill says "publish to the issue tracker"
 
-Create a Jira issue (once the project key is known).
+Create a GitHub issue: `gh issue create`.
 
 ## When a skill says "fetch the relevant ticket"
 
-`getJiraIssue` with the issue key.
+`gh issue view <number>`.
 
-Update this file with the actual project key, issue types, and workflow states once Jira setup lands.
+## Labels
+
+Triage labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`) already exist on the repo — see `docs/agents/triage-labels.md`. Unlike Jira, GitHub won't silently accept a label that doesn't exist yet: `gh label create <name> --description "..." --color <hex>` first if a skill needs one that isn't listed there.

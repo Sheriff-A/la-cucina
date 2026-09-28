@@ -23,13 +23,13 @@ Everything except this file lives in `docs/`.
 - Before using a framework or library API, check whether `docs/llms/` has docs for it (indexed in [coding.md](docs/coding.md)) and prefer those over memory.
 - Name things with the terms in [CONTEXT.md](docs/CONTEXT.md). If a needed term is missing or ambiguous, raise it instead of inventing one.
 - Don't contradict an accepted ADR. If a change needs to, propose a new ADR that supersedes it.
-- Issue tracking is Jira. Setup is still pending.
+- Issue tracking is GitHub Issues, on this repo.
 
 ## Agent skills
 
 ### Issue tracker
 
-Issues are tracked in Jira; project setup is still pending. See `docs/agents/issue-tracker.md`.
+Issues are tracked in GitHub Issues, on this repo. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 

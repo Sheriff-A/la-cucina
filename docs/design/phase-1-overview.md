@@ -55,4 +55,4 @@ Phase 1 is $0/month: Vercel Hobby with the free `.vercel.app` subdomain, Neon fr
 - ~~**ORM.** Which one: Drizzle, Prisma or Kysely?~~ Resolved 2026-09-27: Prisma (already used elsewhere; fits Postgres + JSONB + no-separate-backend per ADR-0000).
 - ~~**Neon free plan.** Does the account allow a second free project alongside the existing one?~~ Resolved 2026-09-27: yes, up to 100 free projects per account, each with its own quota.
 - **Checkbox PDFs.** Which phone viewers keep the ticks? This is the week 1 spike.
-- **Jira setup.** Which project, and how it connects to the ticketing skills.
+- ~~**Jira setup.** Which project, and how it connects to the ticketing skills.~~ Resolved 2026-09-27: Jira subscription lapsed; switched to GitHub Issues on this repo. See [docs/agents/issue-tracker.md](../agents/issue-tracker.md).
