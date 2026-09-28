@@ -52,7 +52,7 @@ Phase 1 is $0/month: Vercel Hobby with the free `.vercel.app` subdomain, Neon fr
 - **Editing published recipes.** Do edits go live immediately, or into a pending revision with history and an "Updated" notice?
 - **Post vs Recipe.** Are these the same thing, or can there be posts that aren't recipes?
 - **Nutrition timing.** Is it in Phase 1 or later, and is it entered manually or taken from a data source?
-- **ORM.** Which one: Drizzle, Prisma or Kysely?
-- **Neon free plan.** Does the account allow a second free project alongside the existing one?
+- ~~**ORM.** Which one: Drizzle, Prisma or Kysely?~~ Resolved 2026-09-27: Prisma (already used elsewhere; fits Postgres + JSONB + no-separate-backend per ADR-0000).
+- ~~**Neon free plan.** Does the account allow a second free project alongside the existing one?~~ Resolved 2026-09-27: yes, up to 100 free projects per account, each with its own quota.
 - **Checkbox PDFs.** Which phone viewers keep the ticks? This is the week 1 spike.
 - **Jira setup.** Which project, and how it connects to the ticketing skills.

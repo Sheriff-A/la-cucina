@@ -17,8 +17,9 @@ LLM-oriented docs for our tools live in [llms/](llms/). Name each file `<tool>.t
 
 | Tool | File | Source URL | Added |
 |---|---|---|---|
-| Next.js | _not added yet_ | | |
+| Next.js | [nextjs-llms.txt](llms/nextjs-llms.txt) | _TBD_ | 2026-09-27 |
+| shadcn/ui | [shadcn-llms.txt](llms/shadcn-llms.txt) | _TBD_ | 2026-09-27 |
+| Better Auth | [better-auth-llms.md](llms/better-auth-llms.md) | _TBD_ | 2026-09-27 |
 | Neon / Postgres | _not added yet_ | | |
-| Better Auth | _not added yet_ | | |
 | Serwist | _not added yet_ | | |
 | Cloudflare R2 | _not added yet_ | | |

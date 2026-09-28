@@ -21,6 +21,8 @@ Payload CMS was considered. The dashboard is built in the Next.js app, so the ed
 
 Auth.js was first proposed, but it's now maintained by the Better Auth team, who recommend Better Auth for new projects. Clerk and Auth0 were considered. Better Auth runs inside the app and stores users, accounts and sessions in our own Postgres, so there's no second service to sync with and no per-user cost. Sessions are database-backed with a sliding expiry, so they can be revoked. The admin signs in with GitHub in Phase 1.
 
+**Amendment (2026-09-27):** Better Auth is provisioned as Neon Auth (Managed Better Auth) rather than self-hosted. Users and sessions still live in our own Neon Postgres branch (in a `neon_auth` schema), GitHub OAuth is still supported, and there's still no per-user cost — the reasons above are unaffected. The trade is Neon's own client wrapper (`@neondatabase/auth`) and a pinned plugin set in exchange for skipping self-hosted setup work. Image storage is unaffected by this: Cloudflare R2 stays, since Neon Object Storage bills egress and R2 was chosen specifically to avoid that (see below).
+
 ## Image storage: Cloudflare R2
 
 Google Cloud Storage was considered. Storage prices are similar, but R2 has no egress fees, which removes the cost risk of popular posts. Storage sits behind one S3-compatible module, so switching providers is a configuration change.
