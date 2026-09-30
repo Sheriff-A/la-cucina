@@ -15,18 +15,21 @@ Format: **Term**: definition. _Avoid_: words not to use for it.
 
 ## Recipes
 
-**Recipe**: A published meal: story, images, ingredient lines and steps.
-**Story**: The backstory write-up that opens a recipe. _Avoid_: blurb, intro.
-**Hero image**: The single lead image of a recipe.
+**Post**: What a creator publishes about a meal: title, story, hero image, gallery, and optionally a recipe. In Phase 1 every post has a recipe; later a post may have none (e.g. a restaurant review) and gain one afterwards.
+**Recipe**: The cookable part of a post: base servings, ingredient lines and steps. Belongs to exactly one post. _Avoid_: using "recipe" for the whole post.
+**Story**: The backstory write-up that opens a post. _Avoid_: blurb, intro.
+**Hero image**: The single lead image of a post.
 **Gallery**: The set of additional images shown with the story.
-**Base servings**: The number of servings the creator wrote the quantities for.
+**Base servings**: The number of servings the creator wrote the recipe's quantities for.
 **Ingredient line**: One row in a recipe's ingredient list: quantity, unit, canonical ingredient, optional prep note. Has a stable ID.
 **Canonical ingredient**: A shared ingredient record that ingredient lines point to. Enables autocomplete, grocery sections and (later) merging.
+**Nutrition data**: Nutrient values per 100 g attached to a canonical ingredient, plus gram weights for its units. A recipe's nutrition per serving is computed from it, never stored. Not in Phase 1.
 **Prep note**: Free text on an ingredient line describing preparation, e.g. "finely diced".
 **Step**: One instruction in a recipe, with optional step photo and step tokens. Has a stable ID.
 **Step token**: A marked value inside step text that renders per unit system: `{oven:…}`, `{temp:…}`, `{len:…}`.
-**Draft**: A recipe not yet visible to readers.
-**Published**: A recipe visible to readers.
+**Draft**: A post not yet visible to readers.
+**Published**: A post visible to readers. Edits to a published post are visible as soon as they are saved.
+**Audit log**: An admin-only record of who changed which record and when. Not in Phase 1. _Avoid_: revision history, version history.
 
 ## Units
 
