@@ -18,9 +18,9 @@ Format: **Term**: definition. _Avoid_: words not to use for it.
 **Post**: What a creator publishes about a meal: title, story, hero image, gallery, and optionally a recipe. In Phase 1 every post has a recipe; later a post may have none (e.g. a restaurant review) and gain one afterwards.
 **Recipe**: The cookable part of a post: base servings, ingredient groups and step groups. Belongs to exactly one post. _Avoid_: using "recipe" for the whole post.
 **Slug**: The readable part of a post's URL, `/posts/<slug>`. Follows the title while the post is a draft; frozen once published. Old slugs redirect to the current one.
-**Story**: The backstory write-up that opens a post. _Avoid_: blurb, intro.
+**Story**: The backstory write-up that opens a post. Rich text written in the Tiptap editor. _Avoid_: blurb, intro.
 **Hero image**: The single lead image of a post, required to publish. Also the post's thumbnail on the feed and in link previews.
-**Gallery**: The ordered set of additional images shown with the story.
+**Gallery**: The ordered set of additional images shown with the story. Optional: a post can have none.
 **Alt text**: A description of an image for screen readers. Required on every image of a post before it can be unlisted or published.
 **Caption**: Optional text shown under a gallery image.
 **Base servings**: The number of servings the creator wrote the recipe's quantities for.
@@ -40,7 +40,7 @@ Format: **Term**: definition. _Avoid_: words not to use for it.
 **Allowed units**: The units offered for a canonical ingredient in the editor's unit dropdown, curated by an admin. Other units can still be picked for a single ingredient line.
 **Nutrition data**: Nutrient values per 100 g attached to a canonical ingredient, plus gram weights for its units. A recipe's nutrition per serving is computed from it, never stored. Not in Phase 1.
 **Prep note**: Free text on an ingredient line describing preparation, e.g. "finely diced".
-**Step**: One instruction in a recipe, with optional step photo and step tokens. Has a stable ID.
+**Step**: One instruction in a recipe, with an optional step photo and step tokens. Has a stable ID.
 **Step group**: An ordered set of steps within a recipe, with an optional heading, e.g. "Make the dough". Independent of ingredient groups. Shown as section breaks in cook mode and the instructions PDF.
 **Step token**: A marked value inside step text that renders per unit system: `{oven:…}`, `{temp:…}`, `{len:…}`.
 **Draft**: A post not visible to readers. Unpublishing sets a post back to draft.

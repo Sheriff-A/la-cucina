@@ -19,7 +19,7 @@ Questions that come up once you try to write `prisma/schema.prisma`, found after
 | 5 | Slugs: rename on title edit, redirects | ✅ decided → [[#5. Slugs]] |
 | 6 | Recipe metadata: prep/cook time, yield, cuisine, tags (SEO, home page) | ✅ decided → [[#6. Recipe metadata]] |
 | 7 | Images: shared Image table, alt text required? | ✅ decided → [[#7. Images]] |
-| 8 | Story rich-text format / editor | ⚪ |
+| 8 | Story rich-text format / editor | ✅ decided → [[#8. Story format]] |
 | 9 | Lifecycle: unpublish, delete (soft/hard), publishedAt, unlisted | ✅ decided → [[#9. Post lifecycle]] |
 | 10 | Users and roles vs the `neon_auth` schema | ⚪ |
 
@@ -206,3 +206,19 @@ Feed = published posts, newest `publishedAt` first, filtered via query string (`
 Owner agreed to all of it, and added: **the hero image doubles as the feed thumbnail**.
 
 **Formalized in:** [ADR-0007](../docs/adr/0007-images.md), [CONTEXT.md](../docs/CONTEXT.md) (Hero image, Gallery, Alt text, Caption), [components.md](../docs/components.md) (Image resizer, Publish check).
+
+**Owner's clarification (2026-10-01):** to be explicit: hero required to publish; **gallery optional** (a post can have a hero and no gallery); **step photos optional** for every step. ADR-0007 and CONTEXT.md updated to say so.
+
+---
+
+## 8. Story format
+
+**Recommendation offered:** Tiptap, JSON in JSONB (per ADR-0000), small fixed formatting set (paragraphs, two heading levels, bold, italic, links, lists, block quotes); no story images, tables, colours, embeds; no length limit, ~160-character excerpt for the feed. Markdown would contradict ADR-0000; Lexical viable but fewer React examples.
+
+### Decision (2026-10-01)
+Owner: "I'm good with Tiptap." Add a note that Tiptap's LLM docs are needed.
+
+**Formalized in:** [ADR-0008](../docs/adr/0008-story-editor-tiptap.md), [CONTEXT.md](../docs/CONTEXT.md) (Story), [coding.md](../docs/coding.md) (Tiptap row in the LLM docs index).
+
+> [!note] Working agreement
+> From 2026-10-01 the owner asked for a commit after each decision.

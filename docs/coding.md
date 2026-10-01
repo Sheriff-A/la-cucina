@@ -22,4 +22,5 @@ LLM-oriented docs for our tools live in [llms/](llms/). Name each file `<tool>.t
 | Better Auth | [better-auth-llms.md](llms/better-auth-llms.md) | _TBD_ | 2026-09-27 |
 | Neon / Postgres | _not added yet_ | | |
 | Serwist | _not added yet_ | | |
+| Tiptap | _not added yet: needed before the week 3 story editor ([ADR-0008](adr/0008-story-editor-tiptap.md))_ | | |
 | Cloudflare R2 | _not added yet_ | | |

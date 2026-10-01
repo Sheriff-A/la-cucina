@@ -9,7 +9,8 @@ Builds on [ADR-0000](0000-initial-decisions.md#image-storage-cloudflare-r2): ima
 ## Decision
 
 - **One `Image` table** for every image: R2 key, width, height, alt text, optional caption, uploader. The hero image is a reference on the post, the gallery is an ordered list on the post, and a step photo is a reference on the step.
-- **Hero image is required to publish.** It also serves as the post's thumbnail on the feed and in link previews.
+- **What's required:** a post needs a hero image to be unlisted or published. The gallery is optional: a post can have a hero and no gallery images. Step photos are optional: any step may have one or not.
+- **The hero image** also serves as the post's thumbnail on the feed and in link previews.
 - **Alt text is required to publish, not to upload.** Drafts may have images without alt text. Moving a post to Unlisted or Published fails until every image it uses has alt text.
 - **Captions** are optional and shown under gallery images.
 - **Resize once, at upload.** Each upload is converted to WebP at a few fixed widths (e.g. 640, 1280, 1920 px) and stored in R2. Pages serve them through `srcset`. This doesn't use Vercel's image optimization, so its monthly limit on the Hobby plan doesn't apply.
