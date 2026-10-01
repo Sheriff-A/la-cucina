@@ -10,6 +10,7 @@ The owner can publish recipes; anyone can read them, scale servings, switch unit
 
 - Custom admin dashboard: story, hero image, gallery, ingredient lines, steps with optional photos, draft/publish
 - Public home page (the feed, filterable by meal type and tag) and post pages
+- Sign-in with email and password; a sign-up page that shows "Sign up coming soon" (public sign-up closed, [ADR-0010](../adr/0010-dev-database-and-sign-in.md))
 - Servings scaling and the metric/imperial toggle, including step tokens
 - Grocery list grouped by grocery section, as a PDF (tickable checkboxes if the week 1 spike works) and as an on-device checklist
 - Instructions PDF, with step photos as an option

@@ -44,7 +44,7 @@ Questions that come up once you try to write `prisma/schema.prisma`, found after
 - For produce, **count is primary**: nobody weighs a tomato at the store.
 - So the primary amount is **whatever you shop or cook by**, and the other measure is supporting information.
 
-**Proposal (pending):** one primary amount (quantity + unit) that drives scaling, conversion, the grocery list and later nutrition, plus an **optional second amount** (quantity + unit) shown in parentheses that also scales and converts. The name for it isn't agreed yet. Bonus: for count items the second amount gives nutrition its gram weight. Open: where the size word ("medium") goes.
+**Proposal:** one primary amount (quantity + unit) that drives scaling, conversion, the grocery list and later nutrition, plus an **optional second amount** (quantity + unit) shown in parentheses that also scales and converts. The name for it isn't agreed yet. Bonus: for count items the second amount gives nutrition its gram weight. Open: where the size word ("medium") goes.
 
 > [!note] For the schema session
 > Prisma can't express `CHECK (quantity > 0)` in the schema itself, so it needs a line of raw SQL in the migration, plus validation in the editor.
@@ -249,3 +249,26 @@ Open items carried forward (not blocking the schema):
 - Week 1 spike: USDA food categories and household portions (ADR-0004).
 - Week 2: where image resizing runs (ADR-0007); dev sign-in for seeded users and local auth branch (ADR-0009); can Neon Auth disable sign-ups.
 - Tiptap LLM docs before week 3 (ADR-0008).
+
+---
+
+## 11. Development database and sign-in methods (follow-up to #10)
+
+**Owner's input (2026-10-01):**
+- Neon branch or Docker for development, whichever is easy to seed and reset. It's all test data; the only hard rule is **seeded data never reaches production**.
+- **Email and password sign-in/sign-up is needed**, alongside social sign-in such as GitHub or Google.
+
+**Proposal:**
+- Run the app locally against a **Neon dev branch** rather than Docker, because Neon Auth lives on the branch: auth users and profiles sit in the same database and the seed can create both. Keep Docker for automated tests where auth is stubbed. This changes ADR-0000's "Docker locally", so it needs a new ADR.
+- Seed script refuses to run against the production branch.
+- Conflict to raise: [phase-1-overview](../docs/design/phase-1-overview.md) says "no reader sign-up" in Phase 1, but email/password sign-up for everyone implies public sign-up.
+
+**Owner's answers:**
+- Neon branch for the app: fine.
+- **Sign-up closed** in Phase 1, but **build the sign-up UI** anyway; submitting shows a "Sign up coming soon" toast. All accounts are deliberate (seed or owner) so both the reader and admin views can be built.
+- Social providers: GitHub and Google fine, **not required now** (users are seeded). **Google more important** than GitHub later.
+
+### Decision (2026-10-01)
+As above. Added by me in the ADR: the toast alone doesn't close sign-up; it must also be blocked at Neon Auth or on the server (to verify in week 2). Email/password replaces ADR-0000's "admin signs in with GitHub".
+
+**Formalized in:** [ADR-0010](../docs/adr/0010-dev-database-and-sign-in.md) (amends ADR-0000 database and auth lines), ADR-0009 consequences updated, [phase-1-overview](../docs/design/phase-1-overview.md) in-scope list.

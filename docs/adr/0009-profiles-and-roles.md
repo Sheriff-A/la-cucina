@@ -21,6 +21,6 @@ Development and preview databases are seeded with **two admins and two readers**
 
 ## Consequences
 
-- Signing in with GitHub is open to anyone with an account, so the server-side role check is what protects the admin. If Neon Auth can turn off new sign-ups in production, do that as well. Whether it can hasn't been checked yet.
-- The seed's test users need a sign-in method that works without real GitHub accounts, e.g. email and password enabled only on development branches. Their credentials go in the project's seed config, not in docs or chat. Check this in week 2 alongside admin sign-in.
-- Local development uses Docker Postgres, but Neon Auth runs on a Neon branch. Week 2 has to settle which branch's auth a local app signs in against, and make the seeded profiles match those auth users.
+- The server-side role check is what protects the admin, whatever sign-in methods exist.
+- Seeded test users sign in with email and password; their credentials go in the project's seed config, not in docs or chat.
+- Sign-in methods, closed sign-up and the development database are settled in [ADR-0010](0010-dev-database-and-sign-in.md).
