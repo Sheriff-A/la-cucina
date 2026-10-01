@@ -1,7 +1,7 @@
 ---
 type: grilling-session
 date: 2026-09-30
-status: in-progress
+status: complete
 tags: [grilling, domain-model, phase-1]
 related: ["[[2026-09-29-open-questions-grilling]]", "[[README]]"]
 ---
@@ -21,7 +21,7 @@ Questions that come up once you try to write `prisma/schema.prisma`, found after
 | 7 | Images: shared Image table, alt text required? | ✅ decided → [[#7. Images]] |
 | 8 | Story rich-text format / editor | ✅ decided → [[#8. Story format]] |
 | 9 | Lifecycle: unpublish, delete (soft/hard), publishedAt, unlisted | ✅ decided → [[#9. Post lifecycle]] |
-| 10 | Users and roles vs the `neon_auth` schema | ⚪ |
+| 10 | Users and roles vs the `neon_auth` schema | ✅ decided → [[#10. Users and roles]] |
 
 ---
 
@@ -222,3 +222,30 @@ Owner: "I'm good with Tiptap." Add a note that Tiptap's LLM docs are needed.
 
 > [!note] Working agreement
 > From 2026-10-01 the owner asked for a commit after each decision.
+
+---
+
+## 10. Users and roles
+
+**Recommendation offered:** our own `Profile` table keyed by the auth user ID, holding role and display name; `Post.authorId` → Profile; no FKs into `neon_auth`; new users are readers; admin granted by seed/one-off command only; server-side role checks; disable sign-ups if Neon Auth allows it.
+
+**Owner's answers:**
+- Profile table fine; must store the **Neon Auth user's key** so each profile maps to its user.
+- **Everyone who signs up is a reader.** Admin = owner manually updates the role in the database, for now.
+- Seed **two admins and two readers** for logging in and testing.
+
+### Decision (2026-10-01)
+As above. Points I added in the ADR (not discussed): seed only on dev/preview, never production; test users need a non-GitHub sign-in method on dev branches; local Docker DB vs Neon-branch auth needs settling in week 2; whether Neon Auth can disable sign-ups is unverified.
+
+**Formalized in:** [ADR-0009](../docs/adr/0009-profiles-and-roles.md), [CONTEXT.md](../docs/CONTEXT.md) (Role, Profile).
+
+---
+
+## Status
+All ten questions resolved. Next session: `prisma/schema.prisma`, built from ADR-0001 to ADR-0009 and CONTEXT.md.
+
+Open items carried forward (not blocking the schema):
+- Whether the `/recipes/<slug>` streamlined view is cook mode reached by URL (ADR-0005).
+- Week 1 spike: USDA food categories and household portions (ADR-0004).
+- Week 2: where image resizing runs (ADR-0007); dev sign-in for seeded users and local auth branch (ADR-0009); can Neon Auth disable sign-ups.
+- Tiptap LLM docs before week 3 (ADR-0008).

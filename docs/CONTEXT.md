@@ -8,7 +8,8 @@ Format: **Term**: definition. _Avoid_: words not to use for it.
 **Admin**: A user who runs the platform (moderation, featuring, settings). In Phase 1 the owner is the only admin and the only creator.
 **Creator**: A user who writes and publishes recipes. Can edit only their own recipes.
 **Reader**: A user who views recipes. Most readers are anonymous; signing up is needed only for account features (Phase 2+).
-**Role**: One of admin, creator or reader. Describes what a user may do, never what they have paid for.
+**Role**: One of admin, creator or reader. Describes what a user may do, never what they have paid for. Everyone who signs up starts as a reader; only a manual database change makes someone an admin.
+**Profile**: Our record of a user: their Neon Auth user ID, role and display name. Posts belong to a profile. _Avoid_: account (that's Neon Auth's).
 **Entitlement**: Access to a paid feature, tracked separately from roles and backed by Stripe. _Avoid_: premium role, paid role.
 **Follow**: A reader choosing to be notified when a creator publishes. Free. _Avoid_: subscribe.
 **Subscription**: Billing only: a reader paying for premium tools. Never used for following a creator.
