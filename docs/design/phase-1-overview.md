@@ -9,7 +9,7 @@ The owner can publish recipes; anyone can read them, scale servings, switch unit
 ## In scope
 
 - Custom admin dashboard: story, hero image, gallery, ingredient lines, steps with optional photos, draft/publish
-- Public home page and recipe pages
+- Public home page (the feed, filterable by meal type and tag) and post pages
 - Servings scaling and the metric/imperial toggle, including step tokens
 - Grocery list grouped by grocery section, as a PDF (tickable checkboxes if the week 1 spike works) and as an on-device checklist
 - Instructions PDF, with step photos as an option
@@ -24,8 +24,8 @@ Reader accounts, creator accounts, follows and notifications, payments, merged g
 
 | Week | Starts | Focus |
 |---|---|---|
-| 1 | 2026-09-28 | Lock scope and data model, wireframes, repo/CI/deploy skeleton, spikes (checkbox PDFs, unit rules) |
-| 2 | 2026-10-05 | Schema and migrations, admin sign-in and roles, image uploads to R2, canonical ingredients |
+| 1 | 2026-09-28 | Lock scope and data model, wireframes, repo/CI/deploy skeleton, spikes (checkbox PDFs, unit rules, USDA categories and portions) |
+| 2 | 2026-10-05 | Schema and migrations, admin sign-in and roles, image uploads to R2, canonical ingredients (USDA import, seed ~200) |
 | 3 | 2026-10-12 | Dashboard shell, story/hero/gallery editor, ingredient editor (highest-risk week) |
 | 4 | 2026-10-19 | Step editor, home page, recipe page, static generation and SEO |
 | 5 | 2026-10-26 | Servings scaling, unit toggle, step tokens, grocery list and its PDF |
@@ -52,7 +52,7 @@ Phase 1 is $0/month: Vercel Hobby with the free `.vercel.app` subdomain, Neon fr
 
 - ~~**Editing published recipes.** Do edits go live immediately, or into a pending revision with history and an "Updated" notice?~~ Resolved 2026-09-29: edits go live immediately on save; no revisions, no "Updated" notice. The editor shows a live banner on published posts. See [ADR-0002](../adr/0002-published-edits-go-live-immediately.md) and [the grilling notes](../../notes/2026-09-29-open-questions-grilling.md).
 - ~~**Post vs Recipe.** Are these the same thing, or can there be posts that aren't recipes?~~ Resolved 2026-09-29: separate. A post has zero or one recipe; in Phase 1 every post has one. See [ADR-0001](../adr/0001-post-and-recipe-are-separate.md) and [the grilling notes](../../notes/2026-09-29-open-questions-grilling.md).
-- ~~**Nutrition timing.** Is it in Phase 1 or later, and is it entered manually or taken from a data source?~~ Resolved 2026-09-29: not in Phase 1. Later, imported from a public dataset (USDA FoodData Central and/or the Canadian Nutrient File; source to be chosen in its own ADR), stored per canonical ingredient, and computed per serving. Manual entry is only a fallback for unmatched ingredients. See [the grilling notes](../../notes/2026-09-29-open-questions-grilling.md).
+- ~~**Nutrition timing.** Is it in Phase 1 or later, and is it entered manually or taken from a data source?~~ Resolved 2026-09-29: not in Phase 1. Later, imported from a public dataset (the source is USDA FoodData Central, already imported in Phase 1 for canonical ingredients: [ADR-0004](../adr/0004-usda-reference-foods-for-canonical-ingredients.md)), stored per canonical ingredient, and computed per serving. Manual entry is only a fallback for unmatched ingredients. See [the grilling notes](../../notes/2026-09-29-open-questions-grilling.md).
 - ~~**ORM.** Which one: Drizzle, Prisma or Kysely?~~ Resolved 2026-09-27: Prisma (already used elsewhere; fits Postgres + JSONB + no-separate-backend per ADR-0000).
 - ~~**Neon free plan.** Does the account allow a second free project alongside the existing one?~~ Resolved 2026-09-27: yes, up to 100 free projects per account, each with its own quota.
 - **Checkbox PDFs.** Which phone viewers keep the ticks? This is the week 1 spike.

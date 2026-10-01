@@ -16,7 +16,9 @@ Plain TypeScript with no UI imports (see [coding.md](coding.md)).
 | Step token renderer | | Parse and render `{oven:}`, `{temp:}`, `{len:}` tokens | Recipe page, cook mode, PDFs | Planned |
 | Grocery list builder | | Group ingredient lines by grocery section | Grocery list, checklist, PDF | Planned |
 | PDF builders | | Grocery list and instructions PDFs | Download buttons | Planned |
-| Image storage client | | Upload and fetch images through one S3-compatible interface (R2 today) | Admin editor, recipe pages | Planned |
+| Image storage client | | Upload and fetch images through one S3-compatible interface (R2 today); signed upload URLs | Admin editor, recipe pages | Planned |
+| Image resizer | | Convert an uploaded image to WebP at fixed widths and store them (ADR-0007) | Image upload | Planned |
+| Publish check | | Validate a post before unlisting/publishing: hero present, alt text on every image, step tokens parse | Admin editor | Planned |
 
 ## UI components
 

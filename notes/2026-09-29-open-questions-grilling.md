@@ -78,6 +78,7 @@ Edits to a published post go live immediately. No revision tables, no pending st
 - Needs per-ingredient gram weights per unit; unmapped ingredients make the total "approximate".
 - Manual entry only as per-ingredient fallback.
 - **Source choice (USDA / CNF / both) is deferred** to its own ADR when the work starts. Assumed rather than confirmed by the owner; the second question was not answered.
+- **Superseded 2026-09-30:** USDA chosen and imported in Phase 1 for canonical ingredients. See [[2026-09-30-recipe-structure-grilling#3. Canonical ingredients]] and [ADR-0004](../docs/adr/0004-usda-reference-foods-for-canonical-ingredients.md).
 
 **Formalized in:** [phase-1-overview](../docs/design/phase-1-overview.md#open-questions), [CONTEXT.md](../docs/CONTEXT.md) (Nutrition data). No ADR: no architecture changes yet.
 
