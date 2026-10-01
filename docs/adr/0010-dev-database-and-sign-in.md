@@ -18,7 +18,11 @@ Amends two lines of [ADR-0000](0000-initial-decisions.md): "Docker locally on th
 - **Email and password is the Phase 1 sign-in method.** Google, then GitHub, can be added as social providers. Neither is required for Phase 1, and Google matters more when the time comes.
 - **Public sign-up is closed in Phase 1.** Every account is created deliberately, by the seed or by the owner. Seeded readers and admins exist so both views can be built and tested.
 - **The sign-up UI is still built.** Submitting it shows a "Sign up coming soon" toast and creates nothing. Opening sign-up later is a switch, not new work.
-- **Closing sign-up in the UI isn't enough**, because the auth API can be called directly. Sign-up must also be blocked at the Neon Auth level in production, or rejected on the server. Which of these Neon Auth supports is checked in week 2.
+- **Closing sign-up in the UI isn't enough**, because the auth API can be called directly. Sign-up is blocked in two places:
+  1. **Neon Auth:** `disable_sign_up` is on in the email-and-password config of every branch (Console → Settings → Auth, `neon neon-auth config email-password update`, or the API). Production and development behave the same, so the "coming soon" flow is tested as it really works.
+  2. **Our server:** the Next.js auth route rejects sign-up requests before forwarding them to Neon Auth, in case a branch's setting is ever wrong.
+- **Accounts are created through the Neon API, CLI or Console**, which work with sign-up disabled. The seed uses the API.
+- `disable_sign_up` belongs to the email-and-password config. When Google is added, check separately that a first-time Google sign-in can't create an account.
 
 ## Consequences
 
