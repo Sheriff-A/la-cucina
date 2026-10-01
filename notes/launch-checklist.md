@@ -15,7 +15,7 @@ Things to do outside the code before Phase 1 launch (target 2026-11-21). Tick th
 - [x] Disable sign-up on the `preview/develop` branch. Done 2026-10-01.
 - [ ] Create your own account on the `production` branch: Neon Console → la-cucina → production → Auth → Users. You choose the password.
 - [ ] After the schema exists: set your profile's role to `admin` in the production database.
-- [ ] Decide what to do with the `vercel-dev` branch. It has no Neon Auth, and it's unclear if it's still needed.
+- [ ] Revisit the `vercel-dev` branch later. It probably came from connecting Neon to Vercel and has no Neon Auth. Leaving it for now (2026-10-01).
 - [ ] Check that new Vercel preview branches also have sign-up disabled. If they don't inherit it, the server-side block in ADR-0010 is the only protection there.
 - [ ] Set up custom SMTP for Neon Auth on production, so verification and password-reset emails don't use Neon's shared sender. See https://neon.com/docs/auth/production-checklist.md
 - [ ] Add the production domain (the `.vercel.app` URL) to Neon Auth's trusted domains.

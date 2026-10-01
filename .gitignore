@@ -145,3 +145,6 @@ vite.config.ts.timestamp-*
 # Webstorm
 .idea/
 
+
+# Local reference data (USDA datasets etc.), never committed
+/references/
