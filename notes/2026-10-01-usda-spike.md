@@ -40,7 +40,7 @@ Checks the assumptions in [ADR-0004](../docs/adr/0004-usda-reference-foods-for-c
 2. **Portion text must be parsed** into our units: "1 medium (2-1/2" dia)" → `medium`; "1 clove" → `clove`; "1 cup, chopped" → `cup`. The unit column is often `undetermined` with the meaning in the modifier text. A small rule-based parser covers the common cases; anything unparsed is ignored.
 3. **USDA categories map to grocery sections, with overrides.** Category alone is wrong for canned goods (canned chickpeas are "Legumes"; crushed tomatoes are "Vegetables"). Rule: category default, then "canned" in the description → Canned goods, then the admin can change it.
 
-## Proposed grocery sections (pending owner)
+## Grocery sections (decided 2026-10-19)
 
 | Grocery section | From USDA category (default) |
 |---|---|
@@ -57,3 +57,13 @@ Checks the assumptions in [ADR-0004](../docs/adr/0004-usda-reference-foods-for-c
 ## Seed candidates (146)
 
 Produce, herbs, spices, baking, grains, legumes, dairy, oils, condiments, nuts, meat and fish. Full list with matched USDA foods and portions in `references/usda/spike-seed-candidates.csv`. Short of the ~200 target; the remainder can come from the first real recipes.
+
+## Decision (2026-10-19)
+
+Owner asked how hard later changes are, what Frozen and Beverages would hold, how USDA maps to new sections, and what a USDA update looks like. Answers accepted:
+- Sections are a table: add, rename or split freely; bulk-move ingredients in the admin.
+- Frozen (frozen peas, berries, puff pastry) and Beverages (cooking wine, coffee) left out until recipes need them. Meat & poultry stay together.
+- Category → section mapping lives in code config; it only prefills new ingredients.
+- Import is re-runnable, upserts by USDA food ID, never touches canonical ingredients, reports changed or missing links.
+
+**Formalized in:** [ADR-0004 amendment](../docs/adr/0004-usda-reference-foods-for-canonical-ingredients.md), [CONTEXT.md](../docs/CONTEXT.md) (Grocery section).

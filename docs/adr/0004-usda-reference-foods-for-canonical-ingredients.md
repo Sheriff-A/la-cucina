@@ -17,6 +17,17 @@
 
 The Canadian Nutrient File was considered. USDA was chosen for its household-portion weights and public-domain licence. CNF can be added as a second reference source later if Canadian brands or fortification matter.
 
+## Amendment (2026-10-19): after the spike
+
+The [USDA spike](../../notes/2026-10-01-usda-spike.md) confirmed the approach and settled the details:
+
+- **Datasets:** SR Legacy is the main source (7,533 of 7,793 foods have household portions). Foundation Foods fills gaps (only 116 of its 469 foods have portions). Both are imported. Branded and survey foods are not.
+- **Grocery sections are a table**, editable by an admin: name and display order. Starting sections: Produce, Meat & poultry, Seafood, Dairy & eggs, Bakery, Spices & seasonings, Pantry, Canned & jarred, Condiments & sauces. Adding, renaming or splitting a section later is a data change; grocery lists are computed on read, so it shows everywhere at once.
+- **USDA category → grocery section** is a small mapping kept as config in the code, with keyword overrides ("canned" → Canned & jarred). It only suggests a section when a canonical ingredient is created. After that the ingredient keeps its own section.
+- **The import is re-runnable.** It upserts reference foods by USDA food ID and never changes canonical ingredients. It reports any canonical ingredient whose linked reference food changed or disappeared, for the admin to review. SR Legacy is frozen; Foundation Foods gets new releases.
+- **Meat and fish** have few count portions in USDA, so units like fillet or thigh are often added by the admin without a gram weight.
+- **Cup weights depend on preparation** (chopped vs sliced onion). Not relevant in Phase 1. Nutrition later must pick a default cup weight per ingredient.
+
 ## Consequences
 
 - Moves the nutrition data source decision into Phase 1. Showing nutrition to readers stays out of Phase 1, but the nutrient values arrive with the import.

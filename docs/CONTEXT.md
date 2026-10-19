@@ -65,7 +65,7 @@ Format: **Term**: definition. _Avoid_: words not to use for it.
 ## Reader tools
 
 **Grocery list**: The ingredient lines of one recipe, scaled and converted as the reader chose, grouped by grocery section. Free, no sign-up.
-**Grocery section**: The store area an ingredient belongs to, e.g. produce or dairy.
+**Grocery section**: The store area a canonical ingredient belongs to: Produce, Meat & poultry, Seafood, Dairy & eggs, Bakery, Spices & seasonings, Pantry, Canned & jarred, Condiments & sauces. An admin can add, rename or split sections. _Avoid_: aisle, category (that's USDA's).
 **Merged grocery list**: A grocery list built from several recipes with totalled quantities and "used in" references. Paid, Phase 2+.
 **Checklist**: The in-app, tickable version of a grocery list, saved on the reader's device.
 **Cook mode**: A recipe view with large step text that keeps the screen awake.
