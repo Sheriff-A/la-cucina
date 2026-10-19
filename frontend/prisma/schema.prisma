@@ -1,7 +1,12 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// La Cucina data model. Terms follow docs/CONTEXT.md; decisions are in docs/adr/0001 to 0010.
+//
+// Conventions:
+// - Models are singular PascalCase; tables are plural snake_case (@@map); columns are snake_case (@map).
+// - IDs are UUIDv7 unless a natural key exists (USDA food IDs, unit codes).
+// - Rules Prisma can't express (CHECK constraints, case-insensitive uniqueness) are raw SQL
+//   at the end of the migration that creates the table. They're listed in comments here.
+// - Users live in Neon Auth's `neon_auth` schema, which Neon manages. Nothing here has a
+//   foreign key into it (ADR-0009).
 
 generator client {
   provider = "prisma-client"
@@ -10,4 +15,395 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+// ─── People ────────────────────────────────────────────────────────────────
+
+enum Role {
+  admin
+  creator
+  reader
+}
+
+/// Our record of a Neon Auth user (ADR-0009). Created on first sign-in; everyone starts as a reader.
+model Profile {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  /// The Neon Auth user's ID. No foreign key: `neon_auth` belongs to Neon.
+  authUserId  String   @unique @map("auth_user_id")
+  role        Role     @default(reader)
+  displayName String   @map("display_name")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  posts                Post[]
+  images               Image[]
+  canonicalIngredients CanonicalIngredient[]
+
+  @@map("profiles")
+}
+
+// ─── Posts ─────────────────────────────────────────────────────────────────
+
+enum PostStatus {
+  draft
+  unlisted
+  published
+}
+
+/// What a creator publishes about a meal (ADR-0001). Has zero or one recipe.
+model Post {
+  id               String     @id @default(uuid(7)) @db.Uuid
+  /// The current slug. Every slug the post has had, including this one, is in post_slugs (ADR-0005).
+  slug             String     @unique
+  title            String
+  /// Tiptap JSON document (ADR-0008). Null until the creator writes one.
+  story            Json?
+  status           PostStatus @default(draft)
+  authorId         String     @map("author_id") @db.Uuid
+  /// Required to unlist or publish, checked by the publish check (ADR-0007).
+  heroImageId      String?    @map("hero_image_id") @db.Uuid
+  /// Set every time the post becomes published; drives feed order (ADR-0006).
+  publishedAt      DateTime?  @map("published_at")
+  /// Set on the first publish, never changed.
+  firstPublishedAt DateTime?  @map("first_published_at")
+  /// Null = not deleted. Restorable until permanently deleted.
+  deletedAt        DateTime?  @map("deleted_at")
+  createdAt        DateTime   @default(now()) @map("created_at")
+  /// Internal only: structured-data "modified" date, never shown on the page.
+  updatedAt        DateTime   @updatedAt @map("updated_at")
+
+  author      Profile            @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  heroImage   Image?             @relation("PostHeroImage", fields: [heroImageId], references: [id], onDelete: SetNull)
+  recipe      Recipe?
+  gallery     PostGalleryImage[]
+  tags        PostTag[]
+  slugHistory PostSlug[]
+
+  @@index([status, deletedAt, publishedAt(sort: Desc)])
+  @@index([authorId])
+  @@map("posts")
+}
+
+/// Every slug a post has had, including its current one. The unique index on `slug` is what
+/// stops a retired slug from being given to a different post (ADR-0005).
+model PostSlug {
+  slug      String   @id
+  postId    String   @map("post_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@map("post_slugs")
+}
+
+/// A free-form label on a post, such as a cuisine. Only an admin adds tags.
+model Tag {
+  id   String @id @default(uuid(7)) @db.Uuid
+  name String @unique
+  /// Used in the feed filter, e.g. /?tag=italian.
+  slug String @unique
+
+  posts PostTag[]
+
+  @@map("tags")
+}
+
+model PostTag {
+  postId String @map("post_id") @db.Uuid
+  tagId  String @map("tag_id") @db.Uuid
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@index([tagId])
+  @@map("post_tags")
+}
+
+// ─── Images (ADR-0007) ─────────────────────────────────────────────────────
+
+/// One uploaded image, stored in R2 as WebP at several widths.
+model Image {
+  id            String   @id @default(uuid(7)) @db.Uuid
+  /// Key prefix in R2; each width is stored under it.
+  r2Key         String   @unique @map("r2_key")
+  width         Int
+  height        Int
+  /// The widths actually stored. Smaller originals aren't upscaled, so this can be shorter than the standard set.
+  variantWidths Int[]    @map("variant_widths")
+  /// Required on every image of a post before it can be unlisted or published.
+  altText       String?  @map("alt_text")
+  caption       String?
+  uploadedById  String   @map("uploaded_by_id") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  uploadedBy  Profile            @relation(fields: [uploadedById], references: [id], onDelete: Restrict)
+  heroOfPosts Post[]             @relation("PostHeroImage")
+  galleryOf   PostGalleryImage[]
+  steps       Step[]
+
+  @@map("images")
+}
+
+/// The ordered gallery of a post. Optional: a post can have none.
+model PostGalleryImage {
+  postId   String @map("post_id") @db.Uuid
+  imageId  String @map("image_id") @db.Uuid
+  position Int
+
+  post  Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  image Image @relation(fields: [imageId], references: [id], onDelete: Cascade)
+
+  @@id([postId, imageId])
+  @@index([postId, position])
+  @@map("post_gallery_images")
+}
+
+// ─── Recipes ───────────────────────────────────────────────────────────────
+
+enum UnitSystem {
+  metric
+  imperial
+}
+
+enum MealType {
+  breakfast
+  lunch
+  dinner
+  snack
+  dessert
+  side
+}
+
+/// The cookable part of a post (ADR-0001).
+/// CHECK: base_servings > 0; times >= 0 when set.
+model Recipe {
+  id               String     @id @default(uuid(7)) @db.Uuid
+  postId           String     @unique @map("post_id") @db.Uuid
+  baseServings     Int        @map("base_servings")
+  sourceUnitSystem UnitSystem @map("source_unit_system")
+  prepTimeMinutes  Int?       @map("prep_time_minutes")
+  cookTimeMinutes  Int?       @map("cook_time_minutes")
+  /// When null, prep + cook is shown instead. Never filled in automatically.
+  totalTimeMinutes Int?       @map("total_time_minutes")
+  mealTypes        MealType[] @map("meal_types")
+  createdAt        DateTime   @default(now()) @map("created_at")
+  updatedAt        DateTime   @updatedAt @map("updated_at")
+
+  post             Post              @relation(fields: [postId], references: [id], onDelete: Cascade)
+  ingredientGroups IngredientGroup[]
+  stepGroups       StepGroup[]
+
+  @@map("recipes")
+}
+
+/// An ordered set of ingredient lines with an optional heading, e.g. "For the dough".
+model IngredientGroup {
+  id       String  @id @default(uuid(7)) @db.Uuid
+  recipeId String  @map("recipe_id") @db.Uuid
+  heading  String?
+  position Int
+
+  recipe Recipe           @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  lines  IngredientLine[]
+
+  @@index([recipeId, position])
+  @@map("ingredient_groups")
+}
+
+/// One row in an ingredient list (ADR-0003).
+/// CHECK: quantity > 0 when set; quantity and unit are both set or both null (null = as needed);
+/// equivalent quantity and unit are both set or both null, > 0, and only on lines with an amount.
+model IngredientLine {
+  id                    String   @id @default(uuid(7)) @db.Uuid
+  groupId               String   @map("group_id") @db.Uuid
+  position              Int
+  canonicalIngredientId String   @map("canonical_ingredient_id") @db.Uuid
+  quantity              Decimal? @db.Decimal(10, 4)
+  unitCode              String?  @map("unit_code")
+  equivalentQuantity    Decimal? @map("equivalent_quantity") @db.Decimal(10, 4)
+  equivalentUnitCode    String?  @map("equivalent_unit_code")
+  prepNote              String?  @map("prep_note")
+
+  group               IngredientGroup     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  canonicalIngredient CanonicalIngredient @relation(fields: [canonicalIngredientId], references: [id], onDelete: Restrict)
+  unit                Unit?               @relation("IngredientLineUnit", fields: [unitCode], references: [code], onDelete: Restrict)
+  equivalentUnit      Unit?               @relation("IngredientLineEquivalentUnit", fields: [equivalentUnitCode], references: [code], onDelete: Restrict)
+
+  @@index([groupId, position])
+  @@index([canonicalIngredientId])
+  @@map("ingredient_lines")
+}
+
+/// An ordered set of steps with an optional heading. Independent of ingredient groups.
+model StepGroup {
+  id       String  @id @default(uuid(7)) @db.Uuid
+  recipeId String  @map("recipe_id") @db.Uuid
+  heading  String?
+  position Int
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  steps  Step[]
+
+  @@index([recipeId, position])
+  @@map("step_groups")
+}
+
+/// One instruction. `text` may contain step tokens such as {oven:180C}.
+model Step {
+  id       String  @id @default(uuid(7)) @db.Uuid
+  groupId  String  @map("group_id") @db.Uuid
+  position Int
+  text     String
+  /// Optional step photo.
+  photoId  String? @map("photo_id") @db.Uuid
+
+  group StepGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  photo Image?    @relation(fields: [photoId], references: [id], onDelete: SetNull)
+
+  @@index([groupId, position])
+  @@map("steps")
+}
+
+// ─── Units and ingredients (ADR-0003, ADR-0004) ────────────────────────────
+
+enum UnitKind {
+  mass
+  volume
+  kitchen
+  count
+}
+
+/// The fixed unit list. Mass and volume units are seeded and never changed from the app;
+/// conversion factors live in the unit converter module, keyed by `code`.
+model Unit {
+  /// Stable code used by the converter, e.g. "g", "fl_oz", "clove", "medium".
+  code         String      @id
+  name         String
+  pluralName   String      @map("plural_name")
+  /// Short display form, e.g. "g", "fl oz", "tbsp". Count units usually have none.
+  abbreviation String?
+  kind         UnitKind
+  /// Set for mass and volume units; null for kitchen and count units, which never convert.
+  system       UnitSystem?
+  position     Int
+
+  allowedFor      CanonicalIngredientUnit[]
+  ingredientLines IngredientLine[]          @relation("IngredientLineUnit")
+  equivalentLines IngredientLine[]          @relation("IngredientLineEquivalentUnit")
+
+  @@map("units")
+}
+
+/// The store area a canonical ingredient belongs to. Admin-editable (ADR-0004 amendment).
+model GrocerySection {
+  id       String @id @default(uuid(7)) @db.Uuid
+  name     String @unique
+  position Int
+
+  ingredients CanonicalIngredient[]
+
+  @@map("grocery_sections")
+}
+
+enum IngredientStatus {
+  pending
+  approved
+}
+
+/// A shared ingredient record that ingredient lines point to.
+/// Unique (case-insensitive): lower(name).
+model CanonicalIngredient {
+  id               String           @id @default(uuid(7)) @db.Uuid
+  name             String
+  pluralName       String           @map("plural_name")
+  grocerySectionId String           @map("grocery_section_id") @db.Uuid
+  /// Pending ingredients are for creators in Phase 2+; everything in Phase 1 is approved.
+  status           IngredientStatus @default(approved)
+  /// The USDA food it was created from, if any.
+  referenceFoodId  Int?             @map("reference_food_id")
+  createdById      String?          @map("created_by_id") @db.Uuid
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+
+  grocerySection  GrocerySection            @relation(fields: [grocerySectionId], references: [id], onDelete: Restrict)
+  referenceFood   ReferenceFood?            @relation(fields: [referenceFoodId], references: [fdcId], onDelete: SetNull)
+  createdBy       Profile?                  @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  aliases         IngredientAlias[]
+  allowedUnits    CanonicalIngredientUnit[]
+  ingredientLines IngredientLine[]
+
+  @@index([grocerySectionId])
+  @@map("canonical_ingredients")
+}
+
+/// Another name that finds a canonical ingredient in search, e.g. "scallion".
+/// Unique (case-insensitive): lower(name).
+model IngredientAlias {
+  id                    String @id @default(uuid(7)) @db.Uuid
+  canonicalIngredientId String @map("canonical_ingredient_id") @db.Uuid
+  name                  String
+
+  canonicalIngredient CanonicalIngredient @relation(fields: [canonicalIngredientId], references: [id], onDelete: Cascade)
+
+  @@index([canonicalIngredientId])
+  @@map("ingredient_aliases")
+}
+
+/// The allowed units of a canonical ingredient, curated by an admin. Also where per-unit gram
+/// weights live for nutrition later (e.g. garlic, clove = 3 g).
+/// CHECK: gram_weight > 0 when set.
+model CanonicalIngredientUnit {
+  canonicalIngredientId String   @map("canonical_ingredient_id") @db.Uuid
+  unitCode              String   @map("unit_code")
+  gramWeight            Decimal? @map("gram_weight") @db.Decimal(10, 3)
+
+  canonicalIngredient CanonicalIngredient @relation(fields: [canonicalIngredientId], references: [id], onDelete: Cascade)
+  unit                Unit                @relation(fields: [unitCode], references: [code], onDelete: Restrict)
+
+  @@id([canonicalIngredientId, unitCode])
+  @@map("canonical_ingredient_units")
+}
+
+// ─── USDA reference foods (ADR-0004) ───────────────────────────────────────
+// Imported from USDA FoodData Central by a re-runnable script. Never shown to readers.
+// Nutrient tables are added when nutrition work starts.
+
+enum ReferenceFoodSource {
+  sr_legacy
+  foundation
+}
+
+model ReferenceFood {
+  /// USDA's FoodData Central ID.
+  fdcId        Int                 @id @map("fdc_id")
+  source       ReferenceFoodSource
+  description  String
+  usdaCategory String?             @map("usda_category")
+  importedAt   DateTime            @default(now()) @map("imported_at")
+
+  portions             ReferenceFoodPortion[]
+  canonicalIngredients CanonicalIngredient[]
+
+  @@index([usdaCategory])
+  @@map("reference_foods")
+}
+
+/// A USDA household portion, e.g. "1 medium (2-1/2" dia) = 110 g".
+model ReferenceFoodPortion {
+  /// USDA's portion ID.
+  id          Int     @id
+  fdcId       Int     @map("fdc_id")
+  amount      Decimal @db.Decimal(10, 3)
+  /// USDA's unit name; often "undetermined", with the meaning in `modifier`.
+  unitName    String? @map("unit_name")
+  modifier    String?
+  description String?
+  gramWeight  Decimal @map("gram_weight") @db.Decimal(10, 3)
+
+  referenceFood ReferenceFood @relation(fields: [fdcId], references: [fdcId], onDelete: Cascade)
+
+  @@index([fdcId])
+  @@map("reference_food_portions")
 }

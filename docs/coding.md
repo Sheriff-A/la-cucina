@@ -9,7 +9,8 @@ Conventions for this codebase, plus the index of LLM docs. For what's already bu
 - **Store what the creator entered; convert only when rendering** ([ADR-0000](adr/0000-initial-decisions.md#units-stored-as-entered-converted-at-render)).
 - **Names come from the glossary.** A `Follow` table, not `Subscription`; `IngredientLine`, not `RecipeItem`.
 - **Reuse before building.** Check [components.md](components.md) first, and register new components in the same change that adds them.
-- **Local database:** Docker Postgres on the same major version as Neon, with seed data. Reset freely.
+- **Databases:** run the app against a Neon development branch; Docker Postgres (same major version) is for automated tests and generating migrations ([ADR-0010](adr/0010-dev-database-and-sign-in.md)). Seed data never goes to production.
+- **Schema** (`frontend/prisma/schema.prisma`): models singular PascalCase, tables plural snake_case, columns snake_case, IDs UUIDv7. Rules Prisma can't express (CHECK constraints, case-insensitive uniqueness) go as raw SQL at the end of the migration that creates the table, and are listed in a comment on the model. Run Prisma commands with `--config prisma7.config.ts`.
 
 ## LLM docs index
 
