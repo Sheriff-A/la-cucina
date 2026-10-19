@@ -31,5 +31,5 @@ The [USDA spike](../../notes/2026-10-01-usda-spike.md) confirmed the approach an
 ## Consequences
 
 - Moves the nutrition data source decision into Phase 1. Showing nutrition to readers stays out of Phase 1, but the nutrient values arrive with the import.
-- Week 2 gains the import and seed work. The week 1 spikes gain a check of the USDA food-category and household-portion fields, which this design depends on and which haven't been verified yet.
-- Schema: a reference food table (with its portions and nutrients), a nullable link from canonical ingredient to reference food, singular and plural names, aliases, and a pending/approved status.
+- Week 2 gains the import and seed work. The week 1 spikes gain a check of the USDA food-category and household-portion fields, which this design depends on (verified 2026-10-01; see the amendment above).
+- Schema: a reference food table (with its portions and nutrients), a grocery section table, a nullable link from canonical ingredient to reference food, singular and plural names, aliases, and a pending/approved status.
