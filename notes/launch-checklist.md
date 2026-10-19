@@ -7,7 +7,7 @@ related: ["[[2026-09-30-recipe-structure-grilling]]"]
 
 # Launch checklist
 
-Things to do outside the code before Phase 1 launch (target 2026-11-21). Tick them off as they're done. Background: [ADR-0009](../docs/adr/0009-profiles-and-roles.md), [ADR-0010](../docs/adr/0010-dev-database-and-sign-in.md).
+Things to do outside the code before Phase 1 launch (target 2027-02-01). Tick them off as they're done. Background: [ADR-0009](../docs/adr/0009-profiles-and-roles.md), [ADR-0010](../docs/adr/0010-dev-database-and-sign-in.md).
 
 ## Auth
 

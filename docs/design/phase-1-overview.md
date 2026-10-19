@@ -4,7 +4,7 @@ The scope, timeline, costs and open questions for Phase 1. Terms follow [CONTEXT
 
 ## Goal
 
-The owner can publish recipes; anyone can read them, scale servings, switch units, download PDFs and cook from their phone. No reader sign-up. Target launch: **2026-11-21**, eight weeks from 2026-09-28.
+The owner can publish recipes; anyone can read them, scale servings, switch units, download PDFs and cook from their phone. No reader sign-up. Target launch: **2027-02-01**. Moved from 2026-11-21 on 2026-10-19, when the plan was about two weeks behind (the data-model decisions took longer than week 1).
 
 ## In scope
 
@@ -25,14 +25,20 @@ Reader accounts, creator accounts, follows and notifications, payments, merged g
 
 | Week | Starts | Focus |
 |---|---|---|
-| 1 | 2026-09-28 | Lock scope and data model, wireframes, repo/CI/deploy skeleton, spikes (checkbox PDFs, unit rules, USDA categories and portions) |
-| 2 | 2026-10-05 | Schema and migrations, admin sign-in and roles, image uploads to R2, canonical ingredients (USDA import, seed ~200) |
-| 3 | 2026-10-12 | Dashboard shell, story/hero/gallery editor, ingredient editor (highest-risk week) |
-| 4 | 2026-10-19 | Step editor, home page, recipe page, static generation and SEO |
-| 5 | 2026-10-26 | Servings scaling, unit toggle, step tokens, grocery list and its PDF |
-| 6 | 2026-11-02 | Instructions PDF, checklist, cook mode, PWA |
-| 7 | 2026-11-09 | Accessibility and performance, device testing, first real recipes, analytics |
-| 8 | 2026-11-16 | Buffer, launch |
+| 1–3 | 2026-09-28 | ✅ Scope and data model (ADR-0001 to 0010), USDA spike. Carried over: wireframes, checkbox PDF spike |
+| 4 | 2026-10-19 | Schema, migration and seed (users, units, grocery sections, starter ingredients); Neon dev branch; checkbox PDF spike |
+| 5 | 2026-10-26 | Admin sign-in and roles, closed sign-up, image uploads to R2 with resizing, USDA import; wireframes |
+| 6–7 | 2026-11-02 | Dashboard shell, story/hero/gallery editor, ingredient editor (highest risk, two weeks) |
+| 8 | 2026-11-16 | Step editor, publish check |
+| 9 | 2026-11-23 | Feed, post page, slugs and redirects, static generation and SEO |
+| 10 | 2026-11-30 | Servings scaling, unit toggle, step tokens |
+| 11 | 2026-12-07 | Grocery list and its PDF, checklist |
+| 12 | 2026-12-14 | Instructions PDF, cook mode, PWA |
+| — | 2026-12-21 | Holiday break and buffer (two weeks) |
+| 13 | 2027-01-04 | Accessibility and performance, device testing |
+| 14 | 2027-01-11 | First real recipes, analytics |
+| 15 | 2027-01-18 | [Launch checklist](../../notes/launch-checklist.md) (SMTP, domain, environment variables), buffer |
+| 16 | 2027-01-25 | Launch on 2027-02-01 |
 
 Estimate: about 110 hours at an assumed 15 hours/week.
 
