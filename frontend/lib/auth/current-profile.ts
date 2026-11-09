@@ -2,6 +2,7 @@
 // session's Neon Auth user ID and creates a reader profile on a user's first sign-in.
 
 import "server-only";
+import { connection } from "next/server";
 import { cache } from "react";
 import { auth } from "@/lib/auth/server";
 import { prisma } from "@/lib/db/prisma";
@@ -19,6 +20,8 @@ export function profileForAuthUser(user: AuthUser): Promise<Profile> {
 
 /** The current visitor's profile, or null when signed out. Cached per request. */
 export const getCurrentProfile = cache(async (): Promise<Profile | null> => {
+  // The session comes from the request's cookies: never prerender past this point.
+  await connection();
   const { data: session } = await auth().getSession();
   const user = session?.user;
   if (!user) return null;

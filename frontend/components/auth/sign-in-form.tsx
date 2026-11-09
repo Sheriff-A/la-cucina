@@ -19,6 +19,9 @@ export function SignInForm({ next }: { next: string }) {
       <div className="flex flex-col gap-2">
         <Label htmlFor="email">Email</Label>
         <Input
+          // Remount when a failed attempt echoes the email back, so the uncontrolled
+          // field picks up the new default value.
+          key={state.email ?? ""}
           id="email"
           name="email"
           type="email"
