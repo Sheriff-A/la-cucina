@@ -44,9 +44,9 @@ What Phase 1 needs, grouped so each group builds on the ones above it. It's an o
 
 ### Sign-in and access
 
-- [ ] Email-and-password sign-in through Neon Auth
-- [ ] Profile found (or created) from the session; the role checked on the server by every admin route and server action ([ADR-0009](../adr/0009-profiles-and-roles.md))
-- [ ] Sign-up blocked on our server, and a sign-up page that shows "Sign up coming soon". The Neon Auth half is done: sign-up is disabled on every branch ([ADR-0010](../adr/0010-dev-database-and-sign-in.md))
+- [x] Email-and-password sign-in through Neon Auth
+- [x] Profile found (or created) from the session; the role checked on the server by every admin route and server action ([ADR-0009](../adr/0009-profiles-and-roles.md))
+- [x] Sign-up blocked on our server, and a sign-up page that shows "Sign up coming soon". The Neon Auth half is done: sign-up is disabled on every branch ([ADR-0010](../adr/0010-dev-database-and-sign-in.md))
 
 ### Images
 
