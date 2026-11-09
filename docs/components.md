@@ -19,6 +19,10 @@ Plain TypeScript with no UI imports (see [coding.md](coding.md)).
 | Image storage client | | Upload and fetch images through one S3-compatible interface (R2 today); signed upload URLs | Admin editor, recipe pages | Planned |
 | Image resizer | | Convert an uploaded image to WebP at fixed widths and store them (ADR-0007) | Image upload | Planned |
 | Publish check | | Validate a post before unlisting/publishing: hero present, alt text on every image, step tokens parse | Admin editor | Planned |
+| Unit list | `frontend/lib/units/unit-list.ts` | The fixed unit list (ADR-0003): stable codes, kinds, systems, exact gram/millilitre factors, and `withCounterparts` (allowing a mass/volume unit allows its other-system counterpart) | Seed, unit converter, admin editor | Built |
+| Starting grocery sections | `frontend/lib/grocery/grocery-sections.ts` | The nine starting grocery sections in display order (ADR-0004 amendment). Seeds the table only; the table is the source of truth afterwards | Seed, grocery section suggester | Built |
+| Grocery section suggester | `frontend/lib/usda/grocery-section-mapping.ts` | USDA food category → grocery section, with keyword overrides ("canned" → Canned & jarred, condiments, fresh herbs, leavening). Only prefills new canonical ingredients | Seed data generation, admin "new canonical ingredient" (planned) | Built |
+| Portion parser | `frontend/lib/usda/portion-parser.ts` | USDA household portion text ("1 medium (2-1/2" dia)", "1 cup, chopped") → unit code and grams per unit; ignores what it can't place | Seed data generation, admin "new canonical ingredient" (planned) | Built |
 
 ## UI components
 
