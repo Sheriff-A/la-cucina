@@ -1,12 +1,12 @@
 # La Cucina
 
-A personal meal-posting PWA. Each post is a recipe with a backstory: hero image, story, gallery, then ingredients and steps. Readers can scale servings, switch metric/imperial, download a grocery list and instructions as PDFs, and cook from their phone. Built for a single creator (the owner) first, with multi-creator support and additional tools planned later.
+A personal meal-posting PWA. Each post is a meal with a backstory (hero image, story, gallery) and, in Phase 1, always a recipe (ingredients and steps). Later, a post may have no recipe, e.g. a restaurant review, and gain one afterwards ([ADR-0001](docs/adr/0001-post-and-recipe-are-separate.md)). Readers can scale servings, switch metric/imperial, download a grocery list and instructions as PDFs, and cook from their phone. Built for a single creator (the owner) first, with multi-creator support and additional tools planned later.
 
-**Stack:** Next.js (App Router, TypeScript) · PostgreSQL (Neon; Docker locally) · Cloudflare R2 for images · Better Auth · Vercel. No separate backend in Phase 1. Reasons for all of these are in [ADR-0000](docs/adr/0000-initial-decisions.md).
+**Stack:** Next.js (App Router, TypeScript) · PostgreSQL (Neon; Docker for tests) · Cloudflare R2 for images · Better Auth · Vercel. No separate backend in Phase 1. Reasons for all of these are in [ADR-0000](docs/adr/0000-initial-decisions.md).
 
 ## Where things are
 
-Everything except this file lives in `docs/`.
+Finalized docs live in `docs/`; in-progress design exploration lives in `notes/`.
 
 | Path | What it's for |
 |---|---|
@@ -16,6 +16,7 @@ Everything except this file lives in `docs/`.
 | [docs/adr/](docs/adr/) | Architecture decision records. [0000](docs/adr/0000-initial-decisions.md) holds the planning decisions; new ones start at 0001. |
 | [docs/design/](docs/design/) | Flows, wireframes, scope and planning notes. |
 | [docs/llms/](docs/llms/) | LLM-oriented docs (llms.txt files) for the tools we use. |
+| [notes/](notes/) | Obsidian-flavored working notes: grilling/domain-modeling sessions, raw design exploration. Tracked in git, but not authoritative — once a decision lands here, reflect the outcome in `docs/` (ADR, CONTEXT.md, or `docs/design/phase-1-overview.md`'s open questions) too. |
 
 ## Rules for agents
 
@@ -24,6 +25,7 @@ Everything except this file lives in `docs/`.
 - Name things with the terms in [CONTEXT.md](docs/CONTEXT.md). If a needed term is missing or ambiguous, raise it instead of inventing one.
 - Don't contradict an accepted ADR. If a change needs to, propose a new ADR that supersedes it.
 - Issue tracking is GitHub Issues, on this repo.
+- Branch model: work happens on `develop` (feature branches + PRs into it). `main` is deploy-only — Vercel deploys production from `main` with `frontend/` as its Root Directory. Don't PR straight into `main`.
 
 ## Agent skills
 
