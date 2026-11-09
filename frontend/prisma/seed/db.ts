@@ -2,8 +2,8 @@
 // adapter; scripts use node-postgres over the direct (unpooled) connection.
 
 import { config } from "dotenv";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@/app/generated/prisma/client";
+
+export { createPrismaClient } from "@/lib/db/prisma-client";
 
 /**
  * Loads .env.development.local (DATABASE_URL: the Neon development branch) and
@@ -18,23 +18,4 @@ export function loadScriptEnv(): void {
 /** The URL scripts connect with (and the one the branch check checks): direct when there is one. */
 export function scriptDatabaseUrl(): string | undefined {
   return process.env["DATABASE_URL_UNPOOLED"] ?? process.env["DATABASE_URL"];
-}
-
-/**
- * node-postgres treats sslmode=require as verify-full today and warns that this will change.
- * Asking for verify-full explicitly keeps today's (stricter) behaviour without the warning.
- */
-function withExplicitSslMode(databaseUrl: string): string {
-  const url = new URL(databaseUrl);
-  if (url.searchParams.get("sslmode") === "require")
-    url.searchParams.set("sslmode", "verify-full");
-  return url.toString();
-}
-
-export function createPrismaClient(databaseUrl: string): PrismaClient {
-  return new PrismaClient({
-    adapter: new PrismaPg({
-      connectionString: withExplicitSslMode(databaseUrl),
-    }),
-  });
 }
