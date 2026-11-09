@@ -6,27 +6,46 @@
 // which must have run first.
 
 import { createPrismaClient, loadScriptEnv, scriptDatabaseUrl } from "./db";
-import { describeTarget, resolveTarget } from "./target";
+import { NeonApi } from "./neon-api";
+import { describeTarget, NEON_PROJECT_ID, resolveTarget } from "./target";
+import { seedCanonicalIngredients } from "./steps/canonical-ingredients";
 import { seedGrocerySections, seedUnits } from "./steps/units-and-sections";
+import { readSeedUsers, seedUsers } from "./steps/users";
 
 async function main(): Promise<void> {
   loadScriptEnv();
   const databaseUrl = scriptDatabaseUrl();
-  const decision = await resolveTarget(
-    databaseUrl,
-    process.env["NEON_API_KEY"],
-  );
+  const neonApiKey = process.env["NEON_API_KEY"];
+  const decision = await resolveTarget(databaseUrl, neonApiKey);
   if (!decision.ok) {
     console.error(`Seed refused: ${decision.reason}`);
     process.exitCode = 1;
     return;
   }
-  console.log(`Seeding ${describeTarget(decision.target)}`);
+  const { target } = decision;
+  // Belt and braces: resolveTarget never allows production for the seed.
+  if (target.kind === "neon" && target.isProduction)
+    throw new Error("Seed refused: production.");
+  console.log(`Seeding ${describeTarget(target)}`);
+
+  // Read before writing anything, so a missing setting fails fast.
+  const users = target.kind === "neon" ? readSeedUsers() : [];
 
   const prisma = createPrismaClient(databaseUrl!);
   try {
     await seedUnits(prisma);
     await seedGrocerySections(prisma);
+    await seedCanonicalIngredients(prisma);
+    if (target.kind === "neon") {
+      await seedUsers(
+        prisma,
+        new NeonApi(neonApiKey!, NEON_PROJECT_ID),
+        target.branchId,
+        users,
+      );
+    } else {
+      console.log("  users: skipped (no Neon Auth on a local Postgres)");
+    }
   } finally {
     await prisma.$disconnect();
   }

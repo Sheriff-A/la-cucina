@@ -119,6 +119,8 @@ describe("parsePortion", () => {
     ['pat (1" sq, 1/3" high)'],
     ["floweret"],
     ["thigh with skin"],
+    ["small box (1.5 oz)"],
+    ["miniature box (.5 oz)"],
     [""],
   ])("ignores %j", (modifier) => {
     expect(parsePortion(sr(1, modifier, 10))).toBeNull();

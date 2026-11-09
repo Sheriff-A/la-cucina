@@ -192,6 +192,11 @@ export function parsePortion(
     }
   }
   if (!unitCode) return null;
+  // A size followed by a container is the container's size: "1 small box (1.5 oz)".
+  if (SIZE_UNITS.has(unitCode)) {
+    const next = words[words.indexOf(unitCode) + 1];
+    if (next && STOP_WORDS.has(next)) return null;
+  }
 
   return {
     unitCode,
