@@ -41,6 +41,16 @@ Both scripts read `.env.development.local` plus `.env.seed.local` ([example](../
 
 **Resetting the development branch.** Reset it from its parent (Console → Branches → development → Reset from parent), or delete it and create a new one. Either way you get production's state, so then run `migrate deploy`, `db:import-usda` and `db:seed`. A new branch gets a new ID, which has to go in `DEVELOPMENT_BRANCH_IDS`, with sign-up disabled.
 
+## Sign-in and access
+
+Neon Auth (Managed Better Auth) through `@neondatabase/auth` ([ADR-0009](adr/0009-profiles-and-roles.md), [ADR-0010](adr/0010-dev-database-and-sign-in.md)). The modules are listed in [components.md](components.md).
+
+- **Every admin page, layout, route handler and server action starts with `await requireAdmin()`** (`frontend/lib/auth/require-admin.ts`). Signed-out visitors are sent to `/sign-in?next=…`; signed-in non-admins get a 403. `proxy.ts` on `/admin/*` refreshes the session cookies and redirects signed-out visitors, but it is not the access check.
+- **Profiles**: signing in finds the profile by the Neon Auth user ID, or creates a reader. The app never sets or changes an existing role.
+- **Sign-up is closed**: the auth route answers `/api/auth/sign-up/*` with 403 `SIGN_UP_DISABLED` before Neon Auth sees it, and the sign-up page only shows "Sign up coming soon".
+- **`NEON_AUTH_COOKIE_SECRET`** (32+ characters) signs the session-data cookie. Neon doesn't provide it: generate one per environment, in `.env.development.local` locally and in Vercel for production and previews.
+- **Playwright** (`npx playwright test`) runs `next dev`, so it uses the development branch, and reads the seeded users from `.env.seed.local`; without that file the signed-in tests skip. Set `PLAYWRIGHT_PORT` if 3000 is taken. WebKit skips the signed-in tests: it doesn't send the `Secure` session cookies over `http://localhost`.
+
 ## LLM docs index
 
 LLM-oriented docs for our tools live in [llms/](llms/). Name each file `<tool>.txt` (or `<tool>-full.txt` for full versions) and add a row here when you add one.
